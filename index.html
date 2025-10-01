@@ -4,20 +4,265 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabela de Preços de Produtos</title>
-    <link rel="stylesheet" href="style.css"> 
+    <style>
+        /* CSS EMBUTIDO: Estilos para o Layout e Aparência */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            /* Fundo da página para preto */
+            background-color: black;
+            color: white; /* Cor padrão do texto em branco */
+        }
+
+        /* --- ESTILOS DO CABEÇALHO --- */
+        .cabecalho-principal {
+            display: flex;
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px;
+        }
+
+        .cabecalho-principal h1 {
+            margin: 0;
+            font-size: 2em;
+            color: white; 
+        }
+
+        #logo-cabecalho {
+            width: 80px; 
+            height: auto;
+            /* Usando um placeholder genérico pois não posso carregar arquivos locais */
+            content: url(https://imgur.com/a/gFF0HPn); 
+        }
+
+        /* --- ESTILOS DA TABELA DE REFERÊNCIA E QUADRO MM --- */
+        .info-referencia-container {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #1a1a1a; 
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.15);
+        }
+
+        .info-referencia-container h2 {
+            color: #00bcd4; /* Cor de destaque (Azul Ciano) */
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        #tabelaReferencia {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        #tabelaReferencia th, #tabelaReferencia td {
+            padding: 8px 0;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        #tabelaReferencia thead tr {
+            background-color: #2c2c2c;
+        }
+
+        /* --- ESTILOS PARA O QUADRO DE PESQUISA MM --- */
+        .mm-search-box {
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #2c2c2c;
+        }
+
+        .mm-search-box h3 {
+            color: #00bcd4;
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .mm-search-box .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #inputLarguraMM {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+        }
+
+        .resultado-display {
+            flex-shrink: 0;
+            padding: 10px 15px;
+            min-width: 150px;
+            text-align: center;
+            background-color: #2c2c2c; /* Fundo inicial escuro */
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        
+        /* Estilos dinâmicos para o resultado */
+        .resultado-success {
+            background-color: #4CAF50; /* Verde de sucesso */
+        }
+
+        .resultado-error {
+            background-color: #f44336; /* Vermelho de erro */
+        }
+
+        .nota-mm {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        /* --- ESTILOS DE CONTROLES E TABELA PRINCIPAL --- */
+        .controles-filtro {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            /* Responsividade para telas menores */
+            flex-direction: column; 
+        }
+        
+        @media (min-width: 600px) {
+            .controles-filtro {
+                flex-direction: row;
+            }
+            #campoBusca {
+                width: 70%;
+            }
+            #filtroLargura {
+                width: 30%;
+            }
+        }
+
+
+        #campoBusca, #filtroLargura {
+            width: 100%; /* Em mobile, ocupa toda a largura */
+            padding: 12px 15px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            color: black; 
+            background-color: white; 
+        }
+
+        #campoBusca:focus, #filtroLargura:focus {
+            border-color: #00bcd4;
+            outline: none;
+        }
+
+        /* Tabela Principal */
+        #tabelaPrecos {
+            border-collapse: collapse; 
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+            background-color: white;
+            overflow-x: auto; /* Garante que a tabela não cause scroll horizontal no corpo */
+        }
+
+        #tabelaPrecos th, #tabelaPrecos td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: black; 
+            white-space: nowrap; /* Impede que o texto quebre em colunas estreitas */
+        }
+
+        #tabelaPrecos thead tr {
+            background-color: #d6d6d6;
+            color: black;
+        }
+
+        #tabelaPrecos tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #tabelaPrecos tbody tr:hover {
+            background-color: #e9e9e9;
+        }
+    </style>
 </head>
 <body>
-	<div class="cabecalho-principal">
-    <h1>Tabela de Preços de Produtos</h1>
-    <img src="logo.png" id="logo-cabecalho" alt="Logo da Empresa">
-</div>
 
-    <input 
-        type="text" 
-        id="campoBusca" 
-        placeholder="Pesquisar por modelo, descrição ou preço..."
-    >
+    <div class="cabecalho-principal">
+        <h1>Tabela de Preços de Produtos</h1>
+        <img src="logo.png" id="logo-cabecalho" alt="Logo da Empresa">
+    </div>
+    
+    <!-- QUADRO DE INFORMAÇÕES E FERRAMENTA DE BUSCA MM -->
+    <div class="info-referencia-container">
+        <h2>Informações e Custos Adicionais</h2>
+        
+        <table id="tabelaReferencia">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Valor Unitário</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Custo Adicional por Pedra (Zircônia)</td>
+                    <td>R$ 2,50</td>
+                    <td>Adicionado ao preço unitário.</td>
+                </tr>
+                <tr>
+                    <td>Modelo "D" (Diamantada)</td>
+                    <td>-</td>
+                    <td>Modelos D-01 a D-09, sem opção de pedras.</td>
+                </tr>
+            </tbody>
+        </table>
 
+        <!-- QUADRO DE PESQUISA MM POR PREÇO BASE -->
+        <div id="mm-price-finder" class="mm-search-box">
+            <h3>Buscar Preço Base por Largura (MM)</h3>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="inputLarguraMM" 
+                    placeholder="Ex: 3MM, 4MM"
+                    maxlength="5"
+                >
+                <div id="resultadoPrecoMM" class="resultado-display">
+                    Aguardando Busca...
+                </div>
+            </div>
+            <p class="nota-mm">O valor exibido é o preço unitário base mais comum para a largura pesquisada, sem pedras.</p>
+        </div>
+        <!-- FIM DO QUADRO MM -->
+    </div>
+    
+    <!-- CONTROLES DE FILTRO -->
+    <div class="controles-filtro">
+        <input 
+            type="text" 
+            id="campoBusca" 
+            placeholder="Pesquisar por modelo, descrição ou preço..."
+        >
+        
+        <select id="filtroLargura">
+            <option value="">Todas as Larguras</option>
+            <!-- Opções preenchidas via JavaScript -->
+        </select>
+    </div>
+
+    <!-- TABELA PRINCIPAL DE DADOS -->
     <table id="tabelaPrecos">
         <thead>
             <tr>
@@ -33,7 +278,704 @@
         </tbody>
     </table>
 
-    <script src="script.js"></script> 
+    <script>
+        // JAVASCRIPT EMBUTIDO: Dados e Lógica
+        
+        // Dados da Tabela (O mesmo array fornecido anteriormente)
+        const dadosTabela = [
+          {
+            "MODELO": "D-01",
+            "DESCRICAO": "D-01 CHANFRADA DIAMANTEIRA 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "D-03",
+            "DESCRICAO": "D-03 RETA DIAMANTADEIRA 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "D-05",
+            "DESCRICAO": "D-05 DIAMANTADA/ INFINITO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "D-06",
+            "DESCRICAO": "D-06 DIAMANTADA/RETA/DOIS FRIZOS 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "D-08",
+            "DESCRICAO": "D-08 RETA/DIAMANTADA/FLECHA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "D-09",
+            "DESCRICAO": "D-09 RETA/1CHANFRO LATERAL/DIAMANTADA/FRIZO LATERAL 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-01",
+            "DESCRICAO": "P-01 LISO (POLIDO) 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-02",
+            "DESCRICAO": "P-02 LISO (POLIDO) 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 7,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 60,40"
+          },
+          {
+            "MODELO": "P-03",
+            "DESCRICAO": "P-03 POLIDA FRIZO TORTO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-04",
+            "DESCRICAO": "P-04 MEIA CANA POLIDA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-05",
+            "DESCRICAO": "P-05 LISO (POLIDO) 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 15,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 80,40"
+          },
+          {
+            "MODELO": "P-06",
+            "DESCRICAO": "P-06 RETA 2FRIZOS ACETINADA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 5,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 55,40"
+          },
+          {
+            "MODELO": "P-07",
+            "DESCRICAO": "P-07 JATEADO 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 32,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-08",
+            "DESCRICAO": "P-08 CHANFRADO / JATEADO 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 32,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-09",
+            "DESCRICAO": "P-09 ABAULADA/JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-10",
+            "DESCRICAO": "P-10 RETA/CHANFRADA/JATEADA INFINITO 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90", // Adicionado preço para evitar falhas na busca MM
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-11",
+            "DESCRICAO": "P-11 RETA/JATEADA/2FRIZOS 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-12",
+            "DESCRICAO": "P-12 ACETINADO 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": 2,
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": "R$ 38,90"
+          },
+          {
+            "MODELO": "P-13",
+            "DESCRICAO": "P-13 LISO (POLIDO) 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-14",
+            "DESCRICAO": "P-14 MEIA CANA FRIZO TORTO JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-15",
+            "DESCRICAO": "P-15 RETA FRIZO JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-16",
+            "DESCRICAO": "P-16 MEIA CANA JATEADO DOIS FRIZOS 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": 3,
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": "R$ 61,40"
+          },
+          {
+            "MODELO": "P-17",
+            "DESCRICAO": "P-17 JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-18",
+            "DESCRICAO": "P-18 TRADICIONAL MEIA CANA POLIDA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-19",
+            "DESCRICAO": "P-19 JATEADO 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": "R$ 26,40"
+          },
+          {
+            "MODELO": "P-20",
+            "DESCRICAO": "P-20 LISO (POLIDO)/JATEADO 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": "R$ 36,40"
+          },
+          {
+            "MODELO": "P-21",
+            "DESCRICAO": "P-21 RETA POLIDA 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": 10,
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": "R$ 48,90"
+          },
+          {
+            "MODELO": "P-22",
+            "DESCRICAO": "P-22 RETA DOIS FRIZOS JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-23",
+            "DESCRICAO": "P-23 MEIA CANA ACETINADO FRIZO CENTRAL 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 3,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 50,40"
+          },
+          {
+            "MODELO": "P-24",
+            "DESCRICAO": "P-24 LISO/JATEADO NA CAVA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-25",
+            "DESCRICAO": "P-25 LISO/JATEADO/ABAULADA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-26",
+            "DESCRICAO": "P-26 ACETINADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-28",
+            "DESCRICAO": "P-28 ABALOADA POLIDA 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-29",
+            "DESCRICAO": "P-29 LISO/JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-30",
+            "DESCRICAO": "P-30 ABALOADA/JATEADA 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-32",
+            "DESCRICAO": "P-32 LISO/JATEADO NA CAVA 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-33",
+            "DESCRICAO": "P-33 CHANFRADA JATEADO 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-34",
+            "DESCRICAO": "P-34 ABALOADA/POLIDA/FRIZO JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-35",
+            "DESCRICAO": "P-35 RETA/JATEADA 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-36",
+            "DESCRICAO": "P-36 RETA / JATEADA INFINITO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-37",
+            "DESCRICAO": "P-37 JATEADO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-38",
+            "DESCRICAO": "P-38 LISO/JATEADO NA CAVA/MEIA CANA 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": 3,
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": "R$ 31,40"
+          },
+          {
+            "MODELO": "P-39",
+            "DESCRICAO": "P-39 MEIA CANA/JATEADO 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-40",
+            "DESCRICAO": "P-40 LISO/JATEADO NA CAVA 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": "R$ 36,40"
+          },
+          {
+            "MODELO": "P-41",
+            "DESCRICAO": "P-41 LISO/ACETINADO ROLO DE LIXA PQ 6MM",
+            "LARGURA (mm)": "6MM",
+            "PEDRAS": 3,
+            "PRECO VENDA UNIT": "R$ 62,90",
+            "COM PEDRA": "R$ 70,40"
+          },
+          {
+            "MODELO": "P-42",
+            "DESCRICAO": "P-42 ABALOADA POLIDA 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-43",
+            "DESCRICAO": "P-43 LISO/ACETINADO 6MM",
+            "LARGURA (mm)": "6MM",
+            "PEDRAS": 15,
+            "PRECO VENDA UNIT": "R$ 62,90",
+            "COM PEDRA": "R$ 100,40"
+          },
+          {
+            "MODELO": "P-44",
+            "DESCRICAO": "P-44 ACETINADO 6MM",
+            "LARGURA (mm)": "6MM",
+            "PEDRAS": 3,
+            "PRECO VENDA UNIT": "R$ 62,90",
+            "COM PEDRA": "R$ 70,40"
+          },
+          {
+            "MODELO": "P-45",
+            "DESCRICAO": "P-45 ACETINADO/JATEADO NA CAVA 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-46",
+            "DESCRICAO": "P-46 LISO (POLIDO) 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": 3,
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": "R$ 61,40"
+          },
+          {
+            "MODELO": "P-47",
+            "DESCRICAO": "P-47 JATEADO/LISO 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-48",
+            "DESCRICAO": "P-48 JATEADO 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-49",
+            "DESCRICAO": "P-49 CHANFRADA / POLIDA 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-50",
+            "DESCRICAO": "P-50  2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-51",
+            "DESCRICAO": "P-51 ABALOADA POLIDA 2MM",
+            "LARGURA (mm)": "2MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 23,90",
+            "COM PEDRA": "R$ 26,40"
+          },
+          {
+            "MODELO": "P-52",
+            "DESCRICAO": "P-52  2,5MM",
+            "LARGURA (mm)": "2,5MM",
+            "PEDRAS": 7,
+            "PRECO VENDA UNIT": "R$ 38,90",
+            "COM PEDRA": "R$ 56,40"
+          },
+          {
+            "MODELO": "P-53",
+            "DESCRICAO": "P-53 LISO/JATEADO 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": "R$ 56,40"
+          },
+          {
+            "MODELO": "P-54",
+            "DESCRICAO": "P-54 LISO/JATEADO 6MM",
+            "LARGURA (mm)": "6MM",
+            "PEDRAS": 2,
+            "PRECO VENDA UNIT": "R$ 62,90",
+            "COM PEDRA": "R$ 67,90"
+          },
+          {
+            "MODELO": "P-55",
+            "DESCRICAO": "P-55 LISO/ACETINADO/JATEADO NA CAVA 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": 2,
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": "R$ 58,90"
+          },
+          {
+            "MODELO": "P-56",
+            "DESCRICAO": "P-56 LISO (POLIDO) 3MM",
+            "LARGURA (mm)": "3MM",
+            "PEDRAS": 10,
+            "PRECO VENDA UNIT": "R$ 33,90",
+            "COM PEDRA": "R$ 58,90"
+          },
+          {
+            "MODELO": "P-57",
+            "DESCRICAO": "P-57 LISO (POLIDO)/MEIA CANA 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-58",
+            "DESCRICAO": "P-58 JATEADO 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-59",
+            "DESCRICAO": "P-59 LISO/JATEADO/MEIA CANA 5MM",
+            "LARGURA (mm)": "5MM",
+            "PEDRAS": "",
+            "PRECO VENDA UNIT": "R$ 53,90",
+            "COM PEDRA": ""
+          },
+          {
+            "MODELO": "P-60",
+            "DESCRICAO": "P-60 MEIA CANA/ACETINADO/DOIS FRIZOS 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-61",
+            "DESCRICAO": "P-61 LISO/JATEADO NA CAVA 4MM",
+            "LARGURA (mm)": "4MM",
+            "PEDRAS": 1,
+            "PRECO VENDA UNIT": "R$ 42,90",
+            "COM PEDRA": "R$ 45,40"
+          },
+          {
+            "MODELO": "P-65",
+            "DESCRICAO": "P-65 POLIDA/CAVA LATERAL JATEADA 6MM",
+            "LARGURA (mm)": "6MM",
+            "PEDRAS": 10,
+            "PRECO VENDA UNIT": "R$ 62,90",
+            "COM PEDRA": "R$ 87,90"
+          },
+          {
+            "MODELO": "P-66",
+            "DESCRICAO": "P-66 JATEADO/FRISO 7MM",
+            "LARGURA (mm)": "7MM",
+            "PEDRAS": 10,
+            "PRECO VENDA UNIT": "R$ 71,90",
+            "COM PEDRA": "R$ 96,60"
+          }
+        ];
+
+        // Mapeamento de Largura (MM) para o Preço Base Unitário mais comum.
+        let precoBasePorLargura = {};
+
+        // FUNÇÃO RENDERIZAÇÃO: Constrói as linhas da tabela no HTML
+        function renderizarTabela(dados) {
+            const corpoTabela = document.getElementById("corpoTabela");
+            corpoTabela.innerHTML = '';
+
+            if (dados.length === 0) {
+                // Colspan de 5 para as 5 colunas do cabeçalho
+                corpoTabela.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum item corresponde à sua pesquisa.</td></tr>';
+                return;
+            }
+
+            dados.forEach(item => {
+                const linha = document.createElement('tr');
+                
+                // As chaves são as mesmas do seu JSON/Array
+                linha.innerHTML = `
+                    <td>${item.MODELO}</td>
+                    <td>${item.DESCRICAO}</td>
+                    <td>${item['LARGURA (mm)']}</td>
+                    <td>${item['PRECO VENDA UNIT']}</td>
+                    <td>${item['COM PEDRA']}</td>
+                `;
+                corpoTabela.appendChild(linha);
+            });
+        }
+        
+        // FUNÇÃO AUXILIAR: Extrai valores únicos para o dropdown e preenche o mapeamento de preço base
+        function preencherFiltroLarguraEPrecoBase() {
+            const filtroLargura = document.getElementById('filtroLargura');
+            const larguras = new Set();
+            
+            // 1. Cria o mapeamento de Largura para o Preço Base
+            dadosTabela.forEach(item => {
+                const largura = item['LARGURA (mm)'];
+                const preco = item['PRECO VENDA UNIT'];
+                
+                // Adiciona a largura para preencher o dropdown
+                if (largura) {
+                    larguras.add(largura);
+                }
+
+                // Armazena o preço base (o primeiro preço unitário não vazio encontrado para aquela largura)
+                if (largura && preco && preco.trim() !== '' && !precoBasePorLargura[largura]) {
+                    precoBasePorLargura[largura] = preco;
+                }
+            });
+
+            // 2. Preenche o Dropdown (Larguras)
+            // Converte o Set para Array, ordena e insere no dropdown
+            Array.from(larguras).sort((a, b) => {
+                // Lógica de ordenação numérica para os MM (ex: 2MM < 3MM)
+                const numA = parseFloat(a.replace('MM', '').replace(',', '.'));
+                const numB = parseFloat(b.replace('MM', '').replace(',', '.'));
+                return numA - numB;
+            }).forEach(largura => {
+                const option = document.createElement('option');
+                option.value = largura;
+                option.textContent = largura;
+                filtroLargura.appendChild(option);
+            });
+            
+            // Adiciona o listener para filtrar quando a largura for alterada
+            filtroLargura.addEventListener('change', filtrarTabela);
+        }
+
+        // NOVO: Inicializa e gerencia a busca de MM por preço
+        function initMmPriceFinder() {
+            const input = document.getElementById('inputLarguraMM');
+            const resultado = document.getElementById('resultadoPrecoMM');
+            
+            // Define o estado inicial do display de resultado
+            resultado.textContent = 'Aguardando Busca...';
+            resultado.className = 'resultado-display'; // Remove classes de sucesso/erro
+
+            // Listener para buscar o preço ao digitar
+            input.addEventListener('input', () => {
+                // Normaliza o input para comparação (ex: "3mm" -> "3MM")
+                let larguraBusca = input.value.toUpperCase().trim();
+                
+                // Tenta corrigir formatos comuns, como "3" para "3MM"
+                if (!larguraBusca.endsWith('MM') && !isNaN(parseFloat(larguraBusca.replace(',', '.')))) {
+                    larguraBusca += 'MM';
+                }
+
+                // Limpa o resultado se o campo estiver vazio
+                if (input.value.trim().length === 0) {
+                    resultado.textContent = 'Aguardando Busca...';
+                    resultado.className = 'resultado-display';
+                    return;
+                }
+
+                // Procura no mapeamento criado
+                const precoEncontrado = precoBasePorLargura[larguraBusca];
+
+                if (precoEncontrado) {
+                    resultado.textContent = `Base: ${precoEncontrado}`;
+                    resultado.className = 'resultado-display resultado-success';
+                } else {
+                    resultado.textContent = `${larguraBusca} não tem preço base.`;
+                    resultado.className = 'resultado-display resultado-error';
+                }
+            });
+        }
+
+        // FUNÇÃO FILTRAGEM: Aplica filtros de texto e largura
+        function filtrarTabela() {
+            const inputBusca = document.getElementById("campoBusca");
+            const filtroBusca = inputBusca.value.toUpperCase();
+            
+            const filtroLarguraSelect = document.getElementById("filtroLargura");
+            const filtroLarguraValor = filtroLarguraSelect.value; 
+
+            // Filtra o array original de dadosTabela
+            const dadosFiltrados = dadosTabela.filter(item => {
+                
+                // 1. Filtro pela Largura (Dropdown)
+                const correspondeLargura = (filtroLarguraValor === "" || item['LARGURA (mm)'] === filtroLarguraValor);
+                
+                // 2. Filtro pela Busca (Input de Texto)
+                // Concatena todos os campos relevantes para pesquisa
+                const textoCompleto = (
+                    item.MODELO + " " + 
+                    item.DESCRICAO + " " + 
+                    item['LARGURA (mm)'] + " " +
+                    item['PRECO VENDA UNIT'] + " " +
+                    item['COM PEDRA']
+                ).toUpperCase();
+                
+                const correspondeBusca = textoCompleto.includes(filtroBusca);
+
+                // O item deve passar pelos DOIS filtros
+                return correspondeLargura && correspondeBusca;
+            });
+
+            renderizarTabela(dadosFiltrados);
+        }
+
+        // Inicialização: Renderiza a tabela inicial e configura os filtros
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Preenche o dropdown de Largura e o mapeamento de preço base
+            preencherFiltroLarguraEPrecoBase(); 
+            
+            // 2. Inicializa o quadro de busca por MM
+            initMmPriceFinder();
+
+            // 3. Renderiza a tabela completa ao carregar
+            renderizarTabela(dadosTabela);
+            
+            // 4. Adiciona listener para o campo de busca principal
+            document.getElementById("campoBusca").addEventListener('input', filtrarTabela);
+        });
+    </script> 
 
 </body>
 </html>
