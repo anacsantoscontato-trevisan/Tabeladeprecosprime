@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela de Preços e Modelos de Alianças</title>
+    <style>
+        /* CSS EMBUTIDO: Estilos para o Layout e Aparência */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            /* Fundo da página para preto */
+            background-color: black;
+            color: white; /* Cor padrão do texto em branco */
+        }
+
+        /* --- ESTILOS GERAIS DE PÁGINA E NAVEGAÇÃO --- */
+        .pagina-conteudo {
+            /* Classe base para todas as páginas */
+            padding-top: 5px; /* Ajuste o padding superior, pois o menu agora está dentro */
+        }
+
+        .pagina-inativa {
+            display: none;
+        }
+
+        .menu-navegacao {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            margin-top: 15px; /* Adiciona um espaço acima do menu após o cabeçalho */
+        }
+
+        .menu-item {
+            background-color: #2c2c2c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s, color 0.2s;
+            text-decoration: none;
+            text-align: center;
+            flex-grow: 1; 
+        }
+
+        .menu-item:hover {
+            background-color: #4a4a4a;
+        }
+
+        .menu-item.ativo {
+            background-color: #ff4d4d; /* Cor de destaque para a página ativa */
+            color: black;
+            border-bottom: 2px solid #ff4d4d;
+        }
+
+        /* --- ESTILOS DO CABEÇALHO --- */
+        .cabecalho-principal {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between; 
+            margin-bottom: 5px; /* Reduzido, pois o menu vem logo em seguida */
+        }
+
+        /* Wrapper para o Título, Data e Aviso de Destaque */
+        .cabecalho-texto {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cabecalho-principal h1 {
+            margin: 0;
+            font-size: 2.2em;
+            color: white; 
+        }
+        
+        /* Estilo para a Linha de Última Atualização */
+        .ultima-atualizacao {
+            color: #aaa; /* Cinza claro */
+            font-size: 0.85em; /* Tamanho pequeno */
+            margin-top: 5px; 
+        }
+
+        /* Estilo para o Aviso de Destaque */
+        .aviso-destaque {
+            color: #f6ff00; /* Cor de destaque (Amarelo) */
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 8px; /* Espaçamento abaixo da data */
+            display: block; 
+        }
+
+        /* Estilização do ícone/imagem - AJUSTADO: TAMANHO GRANDE (100PX) E SEM BORDA */
+        #logo-cabecalho {
+            width: 100px; /* Aumentado para 100px */
+            height: 100px; /* Aumentado para 100px */
+            border-radius: 4px; 
+            object-fit: contain; 
+            border: none; /* Sem borda */
+            transition: transform 0.2s;
+        }
+        
+        #logo-cabecalho:hover {
+            transform: scale(1.05); /* Efeito ao passar o mouse */
+        }
+        
+        /* Otimização do Cabeçalho para Mobile */
+        @media (max-width: 600px) {
+            .cabecalho-principal {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            #logo-cabecalho {
+                margin-top: 15px;
+            }
+            .cabecalho-texto {
+                align-items: center;
+            }
+            .cabecalho-principal h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        /* --- ESTILOS DA TABELA DE REFERÊNCIA E QUADRO MM (PÁGINA 1) --- */
+        .info-referencia-container {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #1a1a1a; 
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.15);
+        }
+
+        .info-referencia-container h2 {
+            color: #ffffff;
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        #tabelaReferencia {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        #tabelaReferencia th, #tabelaReferencia td {
+            padding: 8px 0;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        #tabelaReferencia thead tr {
+            background-color: #2c2c2c;
+        }
+
+        .mm-search-box {
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #2c2c2c;
+        }
+
+        .mm-search-box h3 {
+            color: #00bcd4;
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .mm-search-box .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap; 
+        }
+        
+        #inputLarguraMM, #inputPedras {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            min-width: 120px; 
+            box-sizing: border-box; 
+        }
+        
+        #botaoCalcularPreco {
+            padding: 10px 15px; 
+            background-color: #ff4d4d; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            flex-grow: 1;
+            min-width: 150px;
+        }
+
+
+        .resultado-display {
+            flex-shrink: 0;
+            padding: 10px 15px;
+            min-width: 150px;
+            text-align: center;
+            background-color: #383838; 
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            flex-grow: 1; 
+        }
+        
+        .resultado-success {
+            background-color: #4CAF50;
+        }
+
+        .resultado-error {
+            background-color: #f44336;
+        }
+
+        .nota-mm {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .controles-filtro {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-direction: column; 
+        }
+        
+        @media (min-width: 600px) {
+            .controles-filtro {
+                flex-direction: row;
+            }
+            #campoBusca {
+                width: 70%;
+            }
+            #filtroLargura {
+                width: 30%;
+            }
+        }
+
+
+        #campoBusca, #filtroLargura {
+            width: 100%; 
+            padding: 12px 15px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            color: black; 
+            background-color: white; 
+        }
+
+        #campoBusca:focus, #filtroLargura:focus {
+            border-color: #ff4d4d;
+            outline: none;
+        }
+        
+        /* --- ESTILOS PARA O LAYOUT DE CARD/GRID (USADO NAS DUAS PÁGINAS AGORA) --- */
+        .modelos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+            min-height: 200px;
+            align-content: flex-start; 
+            justify-content: center;
+            text-align: center;
+        }
+        
+        /* ESTILOS DO CARD DE MODELO (UNIFICADO) */
+        .modelo-card {
+            background-color: #2c2c2c;
+            border: 1px solid #ff4d4d;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+            position: relative; /* Adicionado para posicionamento absoluto da imagem */
+            overflow: hidden; /* Garante que a imagem não vaze */
+        }
+
+        .modelo-card:hover {
+            transform: translateY(-5px);
+            background-color: #383838;
+        }
+        
+        /* Estilo para a imagem no card */
+        .modelo-card .card-imagem {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.9); /* Fundo escuro para a imagem */
+            opacity: 0; /* Inicia transparente */
+            transition: opacity 0.3s;
+            pointer-events: none; /* Permite interagir com os elementos de texto abaixo */
+            z-index: 10;
+            border-radius: 8px;
+            padding: 5px; /* Adicionado um pequeno padding para a imagem não tocar a borda */
+        }
+        
+        .modelo-card:hover .card-imagem {
+            opacity: 1; /* Torna visível no hover */
+            pointer-events: all; /* Permite interagir com a imagem se for um link (opcional, mas bom ter) */
+        }
+        
+        .modelo-card .card-imagem img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        
+        .modelo-card h3 {
+            color: #00bcd4;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.4em;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 5px;
+        }
+        
+        .modelo-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        
+        .modelo-card .card-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        
+        /* Estilo para Preço de Venda (Amarelo) */
+        .card-info .preco-unitario {
+            color: #f6ff00; 
+            font-size: 1.1em;
+        }
+        
+        /* Estilo para Preço com Pedra (Vermelho/Destaque) */
+        .card-info .preco-com-pedra {
+            color: #ff4d4d; 
+            font-size: 1.1em;
+        }
+
+        .mensagem-vazia {
+            grid-column: 1 / -1; 
+            font-size: 1.5em;
+            color: #aaa;
+            padding: 50px 0;
+            border: 2px dashed #333;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="pagina-tabela" class="pagina-conteudo pagina-ativa">
+        <div class="cabecalho-principal">
+            <div class="cabecalho-texto">
+                <h1>Tabela de Preços de Produtos</h1>
+                <p class="ultima-atualizacao">Última atualização: 29/10/2025</p>
+                <span class="aviso-destaque">Valores sujeitos a alteração</span>
+            </div>
+            
+            <a href="https://imgur.com/a/gFF0HPn" target="_blank" title="Ver Álbum de Referência">
+                <img 
+                    id="logo-cabecalho" 
+                    src="https://i.imgur.com/GJdUwiO.png" 
+                    alt="Logo do Produto - Clique para ver Referências"
+                    onerror="this.onerror=null; this.src='https://placehold.co/100x100/ff4d4d/ffffff?text=LOGO';"
+                >
+            </a>
+        </div>
+        
+        <div class="menu-navegacao">
+            <a id="nav-tabela" class="menu-item ativo" href="#" onclick="trocarPagina('pagina-tabela'); return false;">Tabela de Preços (Prata/Moeda)</a>
+            <a id="nav-moeda-antiga" class="menu-item" href="#" onclick="trocarPagina('pagina-moeda-antiga'); return false;">Modelos Moeda Antiga</a>
+        </div>
+
+        <div class="info-referencia-container">
+            <h2>Informações e Custos Adicionais</h2>
+            
+            <table id="tabelaReferencia">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Valor Unitário</th>
+                        <th>Observação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Custo Adicional por Pedra (Zircônia)</td>
+                        <td>R$ 2,50</td>
+                        <td>Adicionado ao preço unitário.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div id="mm-price-finder" class="mm-search-box">
+                <h3>Buscar e Calcular Preço (MM e Pedras)</h3>
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <input 
+                        type="text" 
+                        id="inputLarguraMM" 
+                        placeholder="Largura (Ex: 3MM)"
+                        maxlength="5"
+                    >
+                    <input 
+                        type="number" 
+                        id="inputPedras" 
+                        placeholder="Pedras (Qtd)"
+                        min="0"
+                        value="0"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <button 
+                        id="botaoCalcularPreco" 
+                    >
+                        Calcular Preço Total
+                    </button>
+                    <div id="resultadoPrecoMM" class="resultado-display">
+                        Aguardando Cálculo...
+                    </div>
+                </div>
+                <p class="nota-mm">O preço base de cada MM é o valor unitário mais comum encontrado na tabela. Custo por pedra: R$ 2,50.</p>
+            </div>
+            </div>
+        
+        <div class="controles-filtro">
+            <input 
+                type="text" 
+                id="campoBusca" 
+                placeholder="Pesquisar por modelo, descrição ou preço..."
+            >
+            
+            <select id="filtroLargura">
+                <option value="">Todas as Larguras</option>
+                </select>
+        </div>
+
+        <div class="modelos-grid" id="gridModelosPrataMoeda"> 
+            </div>
+    </div>
+
+    <div id="pagina-moeda-antiga" class="pagina-conteudo pagina-inativa">
+        <div class="cabecalho-principal" style="border-bottom: 2px solid #ff4d4d; padding-bottom: 10px; margin-bottom: 5px; display: block;">
+            <h1 style="color: #00bcd4;">Catálogo de Alianças de Moeda Antiga</h1>
+            <p class="ultima-atualizacao" style="color: #ff4d4d;">Os modelos abaixo são exclusivamente de Moeda Antiga. Preços variam de acordo com o peso e largura.</p>
+        </div>
+        
+        <div class="menu-navegacao">
+            <a id="nav-tabela" class="menu-item" href="#" onclick="trocarPagina('pagina-tabela'); return false;">Tabela de Preços (Prata/Moeda)</a>
+            <a id="nav-moeda-antiga" class="menu-item ativo" href="#" onclick="trocarPagina('pagina-moeda-antiga'); return false;">Modelos Moeda Antiga</a>
+        </div>
+        
+        <div class="modelos-grid" id="gridModelosMoedaAntiga"> 
+            </div>
+        
+        <div class="info-referencia-container" style="margin-top: 30px;">
+            <p class="ultima-atualizacao">Nota: Alianças de Moeda Antiga não usam o cálculo de MM da página anterior. Os preços aqui são por par ou conforme especificado pelo vendedor.</p>
+        </div>
+        
+    </div>
+
+    <script>
+        // === INÍCIO DO CÓDIGO JAVASCRIPT INTEGRADO ===
+
+        // Dados da Tabela de Prata/Moeda (mantidos para a página principal)
+        const dadosTabela = [
+            {"MODELO": "D-01", "DESCRICAO": "D-01 CHANFRADA DIAMANTEIRA 3MM", "LARGURA (mm)": "3MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": ""},
+            {"MODELO": "D-03", "DESCRICAO": "D-03 RETA DIAMANTADEIRA 3MM", "LARGURA (mm)": "3MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": ""},
+            {"MODELO": "D-05", "DESCRICAO": "D-05 DIAMANTADA/ INFINITO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "D-06", "DESCRICAO": "D-06 DIAMANTADA/RETA/DOIS FRIZOS 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "D-08", "DESCRICAO": "D-08 RETA/DIAMANTADA/FLECHA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "D-09", "DESCRICAO": "D-09 RETA/1CHANFRO LATERAL/DIAMANTADA/FRIZO LATERAL 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-01", "DESCRICAO": "P-01 LISO (POLIDO) 2MM", "LARGURA (mm)": "2MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": ""},
+            {"MODELO": "P-02", "DESCRICAO": "P-02 LISO (POLIDO) 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 7, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$67,40"},
+            {"MODELO": "P-03", "DESCRICAO": "P-03 POLIDA FRIZO TORTO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-04", "DESCRICAO": "P-04 MEIA CANA POLIDA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-05", "DESCRICAO": "P-05 LISO (POLIDO) 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 15, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$87,40"},
+            {"MODELO": "P-06", "DESCRICAO": "P-06 RETA 2FRIZOS ACETINADA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 5, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$62,40"},
+            {"MODELO": "P-07", "DESCRICAO": "P-07 JATEADO 3MM", "LARGURA (mm)": "3MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": ""},
+            {"MODELO": "P-08", "DESCRICAO": "P-08 CHANFRADO / JATEADO 3MM", "LARGURA (mm)": "3MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": ""},
+            {"MODELO": "P-09", "DESCRICAO": "P-09 ABAULADA/JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-10", "DESCRICAO": "P-10 RETA/CHANFRADA/JATEADA INFINITO 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-11", "DESCRICAO": "P-11 RETA/JATEADA/2FRIZOS 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-12", "DESCRICAO": "P-12 ACETINADO 3MM", "LARGURA (mm)": "3MM", "PEDRAS": 2, "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": "R$44,90"},
+            {"MODELO": "P-13", "DESCRICAO": "P-13 LISO (POLIDO) 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-14", "DESCRICAO": "P-14 MEIA CANA FRIZO TORTO JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-15", "DESCRICAO": "P-15 RETA FRIZO JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-16", "DESCRICAO": "P-16 MEIA CANA JATEADO DOIS FRIZOS 5MM", "LARGURA (mm)": "5MM", "PEDRAS": 3, "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": "R$67,40"},
+            {"MODELO": "P-17", "DESCRICAO": "P-17 JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-18", "DESCRICAO": "P-18 TRADICIONAL MEIA CANA POLIDA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-19", "DESCRICAO": "P-19 JATEADO 2MM", "LARGURA (mm)": "2MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": "R$32,40"},
+            {"MODELO": "P-20", "DESCRICAO": "P-20 LISO (POLIDO)/JATEADO 3MM", "LARGURA (mm)": "3MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": "R$42,40"},
+            {"MODELO": "P-21", "DESCRICAO": "P-21 RETA POLIDA 2MM", "LARGURA (mm)": "2MM", "PEDRAS": 10, "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": "R$54,90"},
+            {"MODELO": "P-22", "DESCRICAO": "P-22 RETA DOIS FRIZOS JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-23", "DESCRICAO": "P-23 MEIA CANA ACETINADO FRIZO CENTRAL 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 3, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$57,40"},
+            {"MODELO": "P-24", "DESCRICAO": "P-24 LISO (POLIDO)/JATEADO NA CAVA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-25", "DESCRICAO": "P-25 LISO/JATEADO/ABAULADA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-26", "DESCRICAO": "P-26 ACETINADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-28", "DESCRICAO": "P-28 ABALOADA POLIDA 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-29", "DESCRICAO": "P-29 LISO/JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-30", "DESCRICAO": "P-30 ABALOADA/JATEADA 2MM", "LARGURA (mm)": "2MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": ""},
+            {"MODELO": "P-32", "DESCRICAO": "P-32 LISO/JATEADO NA CAVA 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-33", "DESCRICAO": "P-33 CHANFRADA JATEADO 2MM", "LARGURA (mm)": "2MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": ""},
+            {"MODELO": "P-34", "DESCRICAO": "P-34 ABALOADA/POLIDA/FRIZO JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-35", "DESCRICAO": "P-35 RETA/JATEADA 2MM", "LARGURA (mm)": "2MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": ""},
+            {"MODELO": "P-36", "DESCRICAO": "P-36 RETA / JATEADA INFINITO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-37", "DESCRICAO": "P-37 JATEADO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-38", "DESCRICAO": "P-38 LISO/JATEADO NA CAVA/MEIA CANA 2MM", "LARGURA (mm)": "2MM", "PEDRAS": 3, "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": "R$37,40"},
+            {"MODELO": "P-39", "DESCRICAO": "P-39 MEIA CANA/JATEADO 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-40", "DESCRICAO": "P-40 LISO/JATEADO NA CAVA 3MM", "LARGURA (mm)": "3MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": "R$42,40"},
+            {"MODELO": "P-41", "DESCRICAO": "P-41 LISO/ACETINADO ROLO DE LIXA PQ 6MM", "LARGURA (mm)": "6MM", "PEDRAS": 3, "PRECO VENDA UNIT": "R$69,90", "COM PEDRA": "R$77,40"},
+            {"MODELO": "P-42", "DESCRICAO": "P-42 ABALOADA/POLIDA 2MM", "LARGURA (mm)": "2MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": ""},
+            {"MODELO": "P-43", "DESCRICAO": "P-43 LISO/ACETINADO 6MM", "LARGURA (mm)": "6MM", "PEDRAS": 15, "PRECO VENDA UNIT": "R$69,90", "COM PEDRA": "R$107,40"},
+            {"MODELO": "P-44", "DESCRICAO": "P-44 ACETINADO 6MM", "LARGURA (mm)": "6MM", "PEDRAS": 3, "PRECO VENDA UNIT": "R$69,90", "COM PEDRA": "R$77,40"},
+            {"MODELO": "P-45", "DESCRICAO": "P-45 ACETINADO/JATEADO NA CAVA 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-46", "DESCRICAO": "P-46 LISO (POLIDO) 5MM", "LARGURA (mm)": "5MM", "PEDRAS": 3, "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": "R$67,40"},
+            {"MODELO": "P-47", "DESCRICAO": "P-47 JATEADO/LISO 4MM", "LARGURA (mm)": "4MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": ""},
+            {"MODELO": "P-48", "DESCRICAO": "P-48 JATEADO 3MM", "LARGURA (mm)": "3MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": ""},
+            {"MODELO": "P-49", "DESCRICAO": "P-49 CHANFRADA / POLIDA 3MM", "LARGURA (mm)": "3MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": ""},
+            {"MODELO": "P-50", "DESCRICAO": "P-50  2MM", "LARGURA (mm)": "2MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": ""},
+            {"MODELO": "P-51", "DESCRICAO": "P-51 ABALOADA POLIDA 2MM", "LARGURA (mm)": "2MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$29,90", "COM PEDRA": "R$32,40"},
+            {"MODELO": "P-52", "DESCRICAO": "P-52  2,5MM", "LARGURA (mm)": "2,5MM", "PEDRAS": 7, "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": "R$57,40"},
+            {"MODELO": "P-53", "DESCRICAO": "P-53 LISO/JATEADO 5MM", "LARGURA (mm)": "5MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": "R$62,40"},
+            {"MODELO": "P-54", "DESCRICAO": "P-54 LISO/JATEADO 6MM", "LARGURA (mm)": "6MM", "PEDRAS": 2, "PRECO VENDA UNIT": "R$69,90", "COM PEDRA": "R$74,90"},
+            {"MODELO": "P-55", "DESCRICAO": "P-55 LISO/ACETINADO/JATEADO NA CAVA 5MM", "LARGURA (mm)": "5MM", "PEDRAS": 2, "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": "R$64,90"},
+            {"MODELO": "P-56", "DESCRICAO": "P-56 LISO (POLIDO) 3MM", "LARGURA (mm)": "3MM", "PEDRAS": 10, "PRECO VENDA UNIT": "R$39,90", "COM PEDRA": "R$64,90"},
+            {"MODELO": "P-57", "DESCRICAO": "P-57 LISO (POLIDO)/MEIA CANA 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-58", "DESCRICAO": "P-58 JATEADO 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-59", "DESCRICAO": "P-59 LISO/JATEADO/MEIA CANA 5MM", "LARGURA (mm)": "5MM", "PEDRAS": "", "PRECO VENDA UNIT": "R$59,90", "COM PEDRA": ""},
+            {"MODELO": "P-60", "DESCRICAO": "P-60 MEIA CANA/ACETINADO/DOIS FRIZOS 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-61", "DESCRICAO": "P-61 LISO/JATEADO NA CAVA 4MM", "LARGURA (mm)": "4MM", "PEDRAS": 1, "PRECO VENDA UNIT": "R$49,90", "COM PEDRA": "R$52,40"},
+            {"MODELO": "P-65", "DESCRICAO": "P-65 POLIDA/CAVA LATERAL JATEADA 6MM", "LARGURA (mm)": "6MM", "PEDRAS": 10, "PRECO VENDA UNIT": "R$69,90", "COM PEDRA": "R$94,90"},
+            {"MODELO": "P-66", "DESCRICAO": "P-66 JATEADO/FRISO 7MM", "LARGURA (mm)": "7MM", "PEDRAS": 10, "PRECO VENDA UNIT": "R$79,90", "COM PEDRA": "R$104,90"}
+        ];
+        
+        // Dados da Tabela de Moeda Antiga (ATUALIZADO COM IMAGENS)
+        const dadosMoedaAntiga = [
+            { "MODELO": "M-01", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-01 MOEDA ANTIGA SEMIANATOMICO 6MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 6, "PEDRA": "", "PREÇO": "R$ 69,00", "COM PEDRA": "R$ 69,00", "IMAGEM": "https://imgur.com/mOZ2y6p" },
+            { "MODELO": "M-04", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-04 MOEDA ANTIGA SEMIANATOMICO 3MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 3, "PEDRA": "", "PREÇO": "R$ 45,00", "COM PEDRA": "R$ 45,00", "IMAGEM": "https://imgur.com/nm3rmvO" },
+            { "MODELO": "M-05", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-05 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": 1, "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 57,50", "IMAGEM": "https://imgur.com/9b7HMlE" },
+            { "MODELO": "M-08", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-08 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": 5, "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 67,50", "IMAGEM": "" },
+            { "MODELO": "M-09", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-09 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": "", "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 55,00", "IMAGEM": "https://imgur.com/4PEVCJf" },
+            { "MODELO": "M-10", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-10 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": 10, "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 80,00", "IMAGEM": "https://imgur.com/T03YdgC" },
+            { "MODELO": "M-11", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-11 MOEDA ANTIGA SEMIANATOMICO 3MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 3, "PEDRA": 2, "PREÇO": "R$ 45,00", "COM PEDRA": "R$ 50,00", "IMAGEM": "https://imgur.com/7YHNxmn" },
+            { "MODELO": "M-12", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-12 MOEDA ANTIGA SEMIANATOMICO 3MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 3, "PEDRA": "", "PREÇO": "R$ 45,00", "COM PEDRA": "R$ 45,00", "IMAGEM": "" },
+            { "MODELO": "M-14", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-14 MOEDA ANTIGA SEMIANATOMICO 6MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 6, "PEDRA": "", "PREÇO": "R$ 69,00", "COM PEDRA": "R$ 69,00", "IMAGEM": "https://imgur.com/D22YLWa" },
+            { "MODELO": "M-15", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-15 MOEDA ANTIGA SEMIANATOMICO 5MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 5, "PEDRA": "", "PREÇO": "R$ 65,00", "COM PEDRA": "R$ 65,00", "IMAGEM": "" },
+            { "MODELO": "M-16", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-16 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": 1, "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 57,50", "IMAGEM": "https://imgur.com/QDwXNiB" },
+            { "MODELO": "M-17", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-17 MOEDA ANTIGA SEMIANATOMICO 6MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 6, "PEDRA": 1, "PREÇO": "R$ 69,00", "COM PEDRA": "R$ 71,50", "IMAGEM": "https://imgur.com/heBsqq4" },
+            { "MODELO": "M-18", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-18 MOEDA ANTIGA SEMIANATOMICO 6MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 6, "PEDRA": 15, "PREÇO": "R$ 69,00", "COM PEDRA": "R$ 106,50", "IMAGEM": "https://imgur.com/3UbDRG6" },
+            { "MODELO": "M-20", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-20 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": 3, "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 62,50", "IMAGEM": "https://imgur.com/2rUjwfL" },
+            { "MODELO": "M-21", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-21 MOEDA ANTIGA SEMIANATOMICO 7MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 7, "PEDRA": 6, "PREÇO": "R$ 75,00", "COM PEDRA": "R$ 90,00", "IMAGEM": "https://imgur.com/GS5syXo" },
+            { "MODELO": "M-22", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-22 MOEDA ANTIGA SEMIANATOMICO 7MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 7, "PEDRA": "", "PREÇO": "R$ 75,00", "COM PEDRA": "R$ 75,00", "IMAGEM": "https://imgur.com/nj3H5pz" },
+            { "MODELO": "M-24", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-24 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": "", "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 55,00", "IMAGEM": "" },
+            { "MODELO": "M-26", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-26 MOEDA ANTIGA SEMIANATOMICO 5MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 5, "PEDRA": "", "PREÇO": "R$ 65,00", "COM PEDRA": "R$ 65,00", "IMAGEM": "https://imgur.com/VUuZXm4" },
+            { "MODELO": "M-27", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-27 MOEDA ANTIGA SEMIANATOMICO 3MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 3, "PEDRA": "", "PREÇO": "R$ 45,00", "COM PEDRA": "R$ 45,00", "IMAGEM": "https://imgur.com/cGx64aT" },
+            { "MODELO": "M-28", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-28 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": "", "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 55,00", "IMAGEM": "" },
+            { "MODELO": "M-29", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-29 MOEDA ANTIGA SEMIANATOMICO 5MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 5, "PEDRA": "", "PREÇO": "R$ 65,00", "COM PEDRA": "R$ 65,00", "IMAGEM": "https://imgur.com/itIqFsn" },
+            { "MODELO": "M-31", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-31 MOEDA ANTIGA SEMIANATOMICO 3MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 3, "PEDRA": "", "PREÇO": "R$ 45,00", "COM PEDRA": "R$ 45,00", "IMAGEM": "" },
+            { "MODELO": "M-32", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-32 MOEDA ANTIGA SEMIANATOMICO 3MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 3, "PEDRA": "", "PREÇO": "R$ 45,00", "COM PEDRA": "R$ 45,00", "IMAGEM": "https://imgur.com/rUeghPp" },
+            { "MODELO": "M-33", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-33 MOEDA ANTIGA SEMIANATOMICO 5MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 5, "PEDRA": "", "PREÇO": "R$ 65,00", "COM PEDRA": "R$ 65,00", "IMAGEM": "https://imgur.com/VcVyueR" },
+            { "MODELO": "M-36", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-36 MOEDA ANTIGA SEMIANATOMICO 4MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 4, "PEDRA": "", "PREÇO": "R$ 55,00", "COM PEDRA": "R$ 55,00", "IMAGEM": "https://imgur.com/TrAmN7y" },
+            { "MODELO": "M-37", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-37 MOEDA ANTIGA SEMIANATOMICO 6MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 6, "PEDRA": "", "PREÇO": "R$ 69,00", "COM PEDRA": "R$ 69,00", "IMAGEM": "https://imgur.com/Ggp2Sbs" },
+            { "MODELO": "M-38", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-38 MOEDA ANTIGA SEMIANATOMICO 5MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 5, "PEDRA": "", "PREÇO": "R$ 65,00", "COM PEDRA": "R$ 65,00", "IMAGEM": "https://imgur.com/9Ty5BaP" },
+            { "MODELO": "M-39", "CLIENTE": "MOEDA", "DESCRIÇÃO": "M-39 MOEDA ANTIGA SEMIANATOMICO 6MM", "MATERIAL": "MOEDA ANTIGA", "CONFORTO": "SEMIANATOMICO", "LARGURA (mm)": 6, "PEDRA": "", "PREÇO": "R$ 69,00", "COM PEDRA": "R$ 69,00", "IMAGEM": "" }
+        ];
+
+        // Mapeamento de Largura (MM) para o Preço Base Unitário mais comum.
+        let precoBasePorLargura = {};
+
+        // FUNÇÃO DE TROCA DE PÁGINAS (MANTIDA)
+        function trocarPagina(idPagina) {
+            // Esconde todas as páginas
+            document.querySelectorAll('.pagina-conteudo').forEach(pagina => {
+                pagina.classList.remove('pagina-ativa');
+                pagina.classList.add('pagina-inativa');
+            });
+
+            // Remove o estilo 'ativo' de todos os itens do menu (em todas as ocorrências duplicadas)
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('ativo');
+            });
+
+            // Mostra a página solicitada
+            const paginaAtiva = document.getElementById(idPagina);
+            
+            if (paginaAtiva) {
+                paginaAtiva.classList.remove('pagina-inativa');
+                paginaAtiva.classList.add('pagina-ativa');
+                
+                // Se for a página de Moeda Antiga, renderiza os modelos
+                if (idPagina === 'pagina-moeda-antiga') {
+                    renderizarModelosMoedaAntiga(dadosMoedaAntiga);
+                }
+                 // Se for a página da Tabela, renderiza os modelos de Prata/Moeda
+                if (idPagina === 'pagina-tabela') {
+                    // Re-renderiza a lista completa, limpando quaisquer filtros anteriores
+                    document.getElementById("campoBusca").value = "";
+                    document.getElementById("filtroLargura").value = "";
+                    renderizarModelosPrataMoeda(dadosTabela);
+                }
+            }
+            
+            // Ativa o item de menu correspondente em AMBOS os menus (apenas um estará visível)
+            document.querySelectorAll('#nav-' + idPagina.replace('pagina-', '')).forEach(navItem => {
+                 navItem.classList.add('ativo');
+            });
+        }
+        
+        // NOVO: FUNÇÃO PARA RENDERIZAR OS CARDS DA PÁGINA PRATA/MOEDA
+        function renderizarModelosPrataMoeda(dados) {
+            const gridContainer = document.getElementById("gridModelosPrataMoeda");
+            if (!gridContainer) return; 
+
+            gridContainer.innerHTML = ''; 
+
+            if (dados.length === 0) {
+                 gridContainer.innerHTML = `
+                    <div class="mensagem-vazia">
+                        <p>Nenhum modelo de Prata/Moeda corresponde à sua busca.</p>
+                        <p style="font-size: 0.8em; color: #666; margin-top: 15px;">Tente ajustar os filtros ou a pesquisa.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            dados.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('modelo-card');
+                
+                const pedrasTexto = item.PEDRAS && item.PEDRAS !== "" ? `Pedras Inclusas: ${item.PEDRAS}` : `Pedras: Nenhuma`;
+                // Se o campo COM PEDRA estiver vazio, usa o PRECO VENDA UNIT como preço com pedra (para simplificar a exibição)
+                const precoComPedra = item['COM PEDRA'] && item['COM PEDRA'].trim() !== '' ? item['COM PEDRA'] : item['PRECO VENDA UNIT'];
+                const precoUnitario = item['PRECO VENDA UNIT'] || 'N/A';
+                
+                card.innerHTML = `
+                    <h3>${item.MODELO} - ${item['LARGURA (mm)']}</h3>
+                    <p><strong>Descrição:</strong> ${item.DESCRICAO}</p>
+                    <p><strong>Largura:</strong> ${item['LARGURA (mm)']}</p>
+                    <p>${pedrasTexto}</p>
+                    
+                    <div class="card-info">
+                        <span style="color: #ccc;">Preço Unitário (Base):</span>
+                        <span class="preco-unitario">${precoUnitario}</span>
+                    </div>
+                    
+                    <div class="card-info" style="border-top: 1px solid #444; padding-top: 10px; margin-top: 5px;">
+                        <span style="color: #ccc;">Preço c/ Pedras:</span>
+                        <span class="preco-com-pedra" title="Preço unitário com o total de pedras da descrição">${precoComPedra}</span>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+
+        // ATUALIZADO: FUNÇÃO PARA RENDERIZAR OS CARDS DE MOEDA ANTIGA COM IMAGEM HOVER
+        function renderizarModelosMoedaAntiga(dados) {
+            const gridContainer = document.getElementById("gridModelosMoedaAntiga");
+            if (!gridContainer) return; 
+
+            gridContainer.innerHTML = ''; // Limpa o conteúdo (remove a mensagem vazia)
+
+            if (dados.length === 0) {
+                 gridContainer.innerHTML = `
+                    <div class="mensagem-vazia">
+                        <p>Nenhum modelo de Moeda Antiga cadastrado por enquanto.</p>
+                        <p style="font-size: 0.8em; color: #666; margin-top: 15px;">Este espaço está reservado para o catálogo.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            dados.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('modelo-card');
+                
+                const pedrasTexto = item.PEDRA && item.PEDRA !== "" ? `Pedras Inclusas: ${item.PEDRA}` : `Pedras: Nenhuma`;
+                const precoBase = item.PREÇO || 'N/A';
+                const precoComPedra = item['COM PEDRA'] && item['COM PEDRA'].trim() !== '' ? item['COM PEDRA'] : precoBase;
+                
+                // Lógica da Imagem: Se houver URL, cria o elemento de imagem para o hover.
+                let imagemHtml = '';
+                if (item.IMAGEM && item.IMAGEM.trim() !== '') {
+                    // Adiciona o elemento de imagem que será exibido no hover (usando os novos estilos CSS)
+                    imagemHtml = `
+                        <div class="card-imagem" title="Clique para ver a foto no Imgur">
+                            <img src="${item.IMAGEM}" alt="Imagem do Modelo ${item.MODELO}">
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    ${imagemHtml}
+                    <h3>${item.MODELO} - ${item['LARGURA (mm)']}mm</h3>
+                    <p><strong>Descrição:</strong> ${item.DESCRIÇÃO}</p>
+                    <p><strong>Conforto:</strong> Semianatômico</p>
+                    <p>${pedrasTexto}</p>
+                    
+                    <div class="card-info">
+                        <span style="color: #ccc;">Preço Unitário (Base):</span>
+                        <span class="preco-unitario">${precoBase}</span>
+                    </div>
+                    
+                    <div class="card-info" style="border-top: 1px solid #444; padding-top: 10px; margin-top: 5px;">
+                        <span style="color: #ccc;">Preço c/ Pedras:</span>
+                        <span class="preco-com-pedra" title="Preço final com o total de pedras da descrição">${precoComPedra}</span>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // FUNÇÃO PARA PREENCHER O FILTRO DE LARGURA E O MAPA DE PREÇO BASE (MANTIDA)
+        function preencherFiltroLarguraEPrecoBase() {
+            const filtroLargura = document.getElementById('filtroLargura');
+            if (!filtroLargura) return; 
+            
+            const larguras = new Set();
+            
+            dadosTabela.forEach(item => {
+                const largura = item['LARGURA (mm)'];
+                const preco = item['PRECO VENDA UNIT'];
+                
+                if (largura) {
+                    larguras.add(largura);
+                }
+
+                if (largura && preco && preco.trim() !== '' && !precoBasePorLargura[largura]) {
+                    precoBasePorLargura[largura] = preco;
+                }
+            });
+
+            Array.from(larguras).sort((a, b) => {
+                const numA = parseFloat(a.replace('MM', '').replace(',', '.'));
+                const numB = parseFloat(b.replace('MM', '').replace(',', '.'));
+                return numA - numB;
+            }).forEach(largura => {
+                const option = document.createElement('option');
+                option.value = largura;
+                option.textContent = largura;
+                filtroLargura.appendChild(option);
+            });
+            
+            filtroLargura.addEventListener('change', filtrarModelos);
+        }
+
+        // FUNÇÃO DE CÁLCULO DE PREÇO POR MM (MANTIDA)
+        function initMmPriceFinder() {
+            const inputLargura = document.getElementById('inputLarguraMM');
+            const inputPedras = document.getElementById('inputPedras');
+            const resultado = document.getElementById('resultadoPrecoMM');
+            const botaoCalcular = document.getElementById('botaoCalcularPreco');
+            
+            if (!botaoCalcular) return; 
+            
+            const CUSTO_POR_PEDRA = 2.50; 
+
+            resultado.textContent = 'Aguardando Cálculo...';
+            resultado.className = 'resultado-display'; 
+
+            function calcularPreco() {
+                let larguraBusca = inputLargura.value.toUpperCase().trim();
+                
+                if (larguraBusca.length > 0 && !larguraBusca.endsWith('MM') && !isNaN(parseFloat(larguraBusca.replace(',', '.')))) {
+                    larguraBusca += 'MM';
+                }
+                
+                if (!larguraBusca || larguraBusca === 'MM') {
+                     resultado.textContent = 'Informe a Largura (Ex: 4MM)';
+                     resultado.className = 'resultado-display resultado-error';
+                     return;
+                }
+
+                const precoBaseTexto = precoBasePorLargura[larguraBusca];
+                
+                if (!precoBaseTexto) {
+                    resultado.textContent = `${larguraBusca} não tem preço base.`;
+                    resultado.className = 'resultado-display resultado-error';
+                    return;
+                }
+                
+                const precoBaseNumerico = parseFloat(precoBaseTexto.replace('R$', '').replace(',', '.').trim());
+                const qtdPedras = parseInt(inputPedras.value) || 0;
+                
+                const custoPedras = qtdPedras * CUSTO_POR_PEDRA;
+                const precoTotal = precoBaseNumerico + custoPedras;
+
+                resultado.textContent = `TOTAL: R$ ${precoTotal.toFixed(2).replace('.', ',')}`;
+                resultado.className = 'resultado-display resultado-success';
+            }
+
+            inputLargura.addEventListener('input', () => {
+                 resultado.textContent = 'Clique em Calcular...';
+                 resultado.className = 'resultado-display'; 
+            });
+            
+            inputPedras.addEventListener('input', () => {
+                 resultado.textContent = 'Clique em Calcular...';
+                 resultado.className = 'resultado-display'; 
+            });
+
+            botaoCalcular.addEventListener('click', calcularPreco);
+            
+            inputLargura.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') calcularPreco();
+            });
+            inputPedras.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') calcularPreco();
+            });
+        }
+
+        // ATUALIZADO: FUNÇÃO DE FILTRAGEM (AJUSTADA PARA CHAMAR O NOVO RENDERIZADOR DE CARDS)
+        function filtrarModelos() {
+            const inputBusca = document.getElementById("campoBusca");
+            const filtroBusca = inputBusca.value.toUpperCase();
+            
+            const filtroLarguraSelect = document.getElementById("filtroLargura");
+            const filtroLarguraValor = filtroLarguraSelect.value; 
+
+            const dadosFiltrados = dadosTabela.filter(item => {
+                
+                const correspondeLargura = (filtroLarguraValor === "" || item['LARGURA (mm)'] === filtroLarguraValor);
+                
+                // Concatena todos os campos de texto para pesquisa
+                const textoCompleto = (
+                    item.MODELO + " " + 
+                    item.DESCRICAO + " " + 
+                    item['LARGURA (mm)'] + " " +
+                    item.PEDRAS + " " +
+                    item['PRECO VENDA UNIT'] + " " +
+                    item['COM PEDRA']
+                ).toUpperCase();
+                
+                const correspondeBusca = textoCompleto.includes(filtroBusca);
+
+                return correspondeLargura && correspondeBusca;
+            });
+
+            // Chama o novo renderizador de cards
+            renderizarModelosPrataMoeda(dadosFiltrados);
+        }
+
+        // Inicialização: Renderiza a tabela inicial e configura os filtros
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            if (document.getElementById("pagina-tabela")) {
+                preencherFiltroLarguraEPrecoBase(); 
+                initMmPriceFinder();
+                
+                // Renderiza os cards de Prata/Moeda inicialmente
+                renderizarModelosPrataMoeda(dadosTabela); 
+                document.getElementById("campoBusca")?.addEventListener('input', filtrarModelos);
+            }
+            
+            // Pré-renderiza os modelos de Moeda Antiga para que estejam prontos
+            renderizarModelosMoedaAntiga(dadosMoedaAntiga);
+        });
+        
+        // === FIM DO CÓDIGO JAVASCRIPT INTEGRADO ===
+    </script> 
+
+</body>
+</html>
